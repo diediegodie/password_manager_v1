@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;">
+    <div
+        style="width: 350px; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); background: #fff; text-align: center;">
+        <h2 style="margin-bottom: 24px;">Login</h2>
+        {% if error %}
+        <p style="color:red; margin-bottom: 16px;">{{ error }}</p>
+        {% endif %}
+        <form action="/login" method="post" style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="text-align: left;">
+                <label for="login_username">Username:</label><br>
+                <input type="text" id="login_username" name="login_username" required
+                    style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+            <div style="text-align: left;">
+                <label for="login_password">Password:</label><br>
+                <input type="password" id="login_password" name="login_password" required
+                    style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+            </div>
+            <button type="submit"
+                style="padding: 10px; border-radius: 4px; border: none; background: #007bff; color: #fff; font-weight: bold; cursor: pointer;">Login</button>
+            <div style="margin-top: 10px; font-size: 0.9rem;">
+                <a href="/forgot-password" style="text-decoration: none; color: #007bff;">Forgot Password?</a>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.9rem;">Don't have an account? <a href="/register"
+                    style="text-decoration: none; color: #007bff;">Register here</a></p>
+        </form>
+        <a href="/"
+            style="margin-top: 20px; text-align: center; display: inline-block; padding: 10px 20px; background: #eee; border-radius: 4px; text-decoration: none; color: #333; font-size: 1rem;">Back
+            to Home</a>
+    </div>
+</body>
+
+</html>
