@@ -1,0 +1,174 @@
+
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+    background: #f7f8fa;
+}
+
+.home-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: #22223b;
+    letter-spacing: 1px;
+}
+
+.home-actions {
+    display: flex;
+    gap: 1.5rem;
+}
+
+
+/* === BUTTONS === */
+.app-btn {
+    padding: 0.75rem 2rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-btn--primary {
+    background: #4f8cff;
+    color: #fff;
+}
+.app-btn--primary:hover,
+.app-btn--primary:focus {
+    background: #2563eb;
+    color: #fff;
+}
+
+.app-btn--secondary {
+    background: #fff;
+    color: #4f8cff;
+    border: 2px solid #4f8cff;
+}
+.app-btn--secondary:hover,
+.app-btn--secondary:focus {
+    background: #e0e7ff;
+    color: #2563eb;
+}
+
+.app-btn--icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 8px;
+    font-size: 1.5rem;
+    background: #fff;
+    color: #4f8cff;
+    border: 2px solid #4f8cff;
+    transition: background 0.2s, color 0.2s;
+}
+.app-btn--icon:hover,
+.app-btn--icon:focus {
+    background: #e0e7ff;
+    color: #2563eb;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #f7f8fa;
+}
+
+
+/* === TITLES & ACTIONS === */
+.app-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: #22223b;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.app-actions {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.auth-form {
+    width: 100%;
+    max-width: 340px;
+    background: #fff;
+    padding: 2rem 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
+}
+
+.auth-label {
+    font-size: 1rem;
+    color: #22223b;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    display: block;
+}
+
+.auth-input {
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #c7d0e1;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.auth-input:focus {
+    border-color: #4f8cff;
+}
+
+.auth-submit {
+    margin-top: 1.2rem;
+    width: 100%;
+}
+
+
+.return-btn {
+    align-self: flex-start;
+    margin-bottom: 2.5rem;
+}
+
+.icon-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    padding: 0;
+    border-radius: 8px;
+    position: relative;
+    background: #fff;
+    color: #4f8cff;
+    border: 2px solid #4f8cff;
+    transition: background 0.2s, color 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.icon-btn:hover,
+.icon-btn:focus {
+    background: #e0e7ff;
+    color: #2563eb;
+}

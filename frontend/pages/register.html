@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Password Manager</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+    <main class="auth-container">
+        <a href="index.html" class="app-btn app-btn--icon return-btn" title="Return to Homepage"
+            aria-label="Return to Homepage">←</a>
+        <h1 class="app-title">Register</h1>
+        <form class="auth-form" autocomplete="off">
+            <label for="email" class="auth-label">E-mail / Username</label>
+            <input type="text" id="email" name="email" class="auth-input" required autocomplete="username">
+
+            <label for="password" class="auth-label">Password</label>
+            <input type="password" id="password" name="password" class="auth-input" required
+                autocomplete="current-password">
+
+            <button type="submit" class="app-btn app-btn--primary auth-submit">Submit</button>
+            <br>
+            <br>
+            <label class="auth-info">Already have an account? <a href="login.html" class="auth-link">Login
+                    here</a></label>
+        </form>
+    </main>
+</body>
+
+</html>
