@@ -11,9 +11,9 @@
 <body>
     <main class="auth-container">
         <a href="index.html" class="app-btn app-btn--icon return-btn" title="Return to Homepage"
-            aria-label="Return to Homepage">←</a>
+            aria-label="Return to Homepage">0</a>
         <h1 class="app-title">Login</h1>
-        <form class="auth-form" autocomplete="off">
+        <form class="auth-form" id="loginForm" autocomplete="off">
             <label for="email" class="auth-label">E-mail / Username</label>
             <input type="text" id="email" name="email" class="auth-input" required autocomplete="username">
 
@@ -21,13 +21,14 @@
             <input type="password" id="password" name="password" class="auth-input" required
                 autocomplete="current-password">
 
-            <button type="submit" class="app-btn app-btn--primary auth-submit">Submit</button>
+            <button type="submit" class="app-btn app-btn--primary auth-submit">Login</button>
             <br>
             <br>
             <label class="auth-info">Don't have an account? <a href="register.html" class="auth-link">Register
                     here</a></label>
         </form>
     </main>
+    <script src="../assets/js/main.js"></script>
 </body>
 
 </html>

@@ -9,13 +9,31 @@
 </head>
 
 <body>
-    <main class="home-container">
-        <h1 class="app-title">Password Manager</h1>
-        <div class="app-actions">
-            <a href="register.html" class="app-btn app-btn--primary">Create Account</a>
-            <a href="login.html" class="app-btn app-btn--secondary">Login</a>
+    <main class="vault-container">
+        <header class="vault-header">
+            <h1>Password Vault</h1>
+            <button id="logoutBtn" class="app-btn app-btn--secondary">Logout</button>
+        </header>
+        <section id="vaultEntries" class="vault-entries">
+            <!-- Password entries will be rendered here -->
+        </section>
+        <button id="addEntryBtn" class="app-btn app-btn--primary">Add Entry</button>
+        <div id="entryFormModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <form id="entryForm">
+                    <label for="service">Service Name</label>
+                    <input type="text" id="service" name="service" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Password</label>
+                    <input type="text" id="entryPassword" name="password" required>
+                    <button type="submit" class="app-btn app-btn--primary">Save</button>
+                </form>
+            </div>
         </div>
     </main>
+    <script src="../assets/js/main.js"></script>
 </body>
 
 </html>

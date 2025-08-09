@@ -7,8 +7,7 @@ covering normal cases, edge cases, and failure cases.
 
 import pytest
 import unittest.mock as mock
-from flask import Flask
-from backend.auth.routes import auth_bp
+from backend.app import create_app
 from backend.auth.validators import ValidationError
 from backend.auth.interfaces import (
     IRegistrationValidator,
@@ -20,16 +19,13 @@ from backend.auth.exceptions import DuplicateEmailError, DatabaseError, HashingE
 
 @pytest.fixture
 def app():
-    """Create a Flask test app with the auth blueprint registered."""
-    app = Flask(__name__)
-    app.register_blueprint(auth_bp)
+    app = create_app()
     app.config["TESTING"] = True
     return app
 
 
 @pytest.fixture
 def client(app):
-    """Create a test client for the Flask app."""
     return app.test_client()
 
 

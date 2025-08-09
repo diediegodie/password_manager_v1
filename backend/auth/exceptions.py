@@ -1,3 +1,9 @@
+class InvalidCredentialsError(Exception):
+    """Raised when login credentials are invalid."""
+
+    pass
+
+
 class DuplicateEmailError(Exception):
     """Raised when attempting to register a duplicate email address."""
 

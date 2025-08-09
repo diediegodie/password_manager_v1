@@ -29,26 +29,37 @@ class UserRepository(IUserRepository):
             raise ValueError("Email and password_hash must be strings.")
         normalized_email = email.strip().lower()
         conn = None
+
+    def get_user_by_email(self, email: str) -> dict | None:
+        """
+        Fetch a user by normalized email. Returns dict or None.
+        Args:
+            email (str): The email address to look up.
+        Returns:
+            dict: {"id": ..., "email": ..., "password_hash": ...} or None
+        Raises:
+            DatabaseError: If a database error occurs.
+        """
+        if not isinstance(email, str):
+            raise ValueError("Email must be a string.")
+        normalized_email = email.strip().lower()
+        conn = None
         cursor = None
-        from backend.auth.exceptions import DuplicateEmailError, DatabaseError
+        from backend.auth.exceptions import DatabaseError
 
         try:
             conn = self._db_connection.get_connection()
             cursor = conn.cursor()
-            try:
-                cursor.execute(
-                    "INSERT INTO users (email, password_hash) VALUES (?, ?)",
-                    (normalized_email, password_hash),
-                )
-                conn.commit()
-            except Exception as e:
-                # Check for unique constraint violation (duplicate email)
-                if "UNIQUE constraint failed" in str(e) or "UNIQUE constraint" in str(
-                    e
-                ):
-                    raise DuplicateEmailError("Email already registered.")
-                else:
-                    raise DatabaseError(f"Database error during user creation: {e}")
+            cursor.execute(
+                "SELECT id, email, password_hash FROM users WHERE email = ? LIMIT 1",
+                (normalized_email,),
+            )
+            row = cursor.fetchone()
+            if row:
+                return {"id": row[0], "email": row[1], "password_hash": row[2]}
+            return None
+        except Exception as e:
+            raise DatabaseError(f"Database error during user lookup: {e}")
         finally:
             if cursor is not None:
                 try:
@@ -63,13 +74,12 @@ class UserRepository(IUserRepository):
 
     def is_email_taken(self, email: str) -> bool:
         """
-        Check if an email is already registered.
+        Check if an email exists in the users table.
         Args:
             email (str): The email address to check.
         Returns:
             bool: True if the email exists, False otherwise.
         Raises:
-            ValueError: If email is not a string.
             DatabaseError: If a database error occurs.
         """
         if not isinstance(email, str):

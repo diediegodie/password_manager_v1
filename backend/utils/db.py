@@ -1,3 +1,8 @@
+def get_db():
+    """Returns a SQLite connection to the app database (for use in Flask context)."""
+    return SQLiteConnection().get_connection()
+
+
 import os
 import sqlite3
 import logging
@@ -6,14 +11,14 @@ from typing import Any, Protocol, Optional
 
 class IPathResolver(Protocol):
     """Abstraction for resolving database file paths."""
-    def resolve_db_path(self, db_path: Optional[str] = None) -> str:
-        ...
+
+    def resolve_db_path(self, db_path: Optional[str] = None) -> str: ...
 
 
 class ILogger(Protocol):
     """Abstraction for logging."""
-    def error(self, msg: str) -> None:
-        ...
+
+    def error(self, msg: str) -> None: ...
 
 
 class PathResolver(IPathResolver):
@@ -28,8 +33,7 @@ class PathResolver(IPathResolver):
 
 
 class IDatabaseConnection(Protocol):
-    def get_connection(self) -> sqlite3.Connection:
-        ...
+    def get_connection(self) -> sqlite3.Connection: ...
 
 
 class SQLiteConnection(IDatabaseConnection):

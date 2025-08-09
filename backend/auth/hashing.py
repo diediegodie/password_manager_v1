@@ -1,3 +1,16 @@
+# Password verification for login
+def verify_password(password: str, password_hash: str) -> bool:
+    """Verify a plaintext password against a bcrypt hash."""
+    if not isinstance(password, str) or not isinstance(password_hash, str):
+        return False
+    try:
+        return bcrypt.checkpw(password.encode("utf-8"), password_hash.encode("utf-8"))
+    except Exception:
+        return False
+
+
+# JWT integration prep (Flask-JWT-Extended)
+# from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from .interfaces import (
     IPasswordHasher,
 )  # import from interfaces to avoid circular import

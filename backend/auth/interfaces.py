@@ -21,6 +21,10 @@ class IUserRepository(ABC):
     def create_user(self, email: str, password_hash: str) -> None:
         pass
 
+    @abstractmethod
+    def get_user_by_email(self, email: str) -> dict | None:
+        pass
+
 
 class IPasswordHasher(ABC):
     """Interface for password hashing."""

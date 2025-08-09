@@ -60,3 +60,11 @@ class RegistrationValidator(IRegistrationValidator):
 # password_validator = PasswordValidator()
 # registration_validator = RegistrationValidator(email_validator, password_validator)
 # registration_validator.validate(email, password)
+
+# Login validation for login endpoint
+def validate_login_data(email: str, password: str) -> None:
+    """Validate login data: email format and non-empty password."""
+    email_validator = EmailValidator()
+    if not isinstance(password, str) or not password:
+        raise ValidationError("Password must not be empty.")
+    email_validator.validate(email)
