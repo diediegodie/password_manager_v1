@@ -1,31 +1,7 @@
-# Patch jwt_required and get_jwt_identity BEFORE importing anything that loads backend.vault.routes
-from unittest.mock import patch, MagicMock
-
-patch("backend.vault.routes.jwt_required", lambda *a, **kw: (lambda f: f)).start()
-patch("backend.vault.routes.get_jwt_identity", return_value=1).start()
-
-"""
-Tests for the /api/vault/ endpoints (CRUD, JWT required).
-Covers: list, add, get, update, delete. Uses pytest and unittest.mock.
-"""
-
-# Patch jwt_required and get_jwt_identity BEFORE importing anything that loads backend.vault.routes
-from unittest.mock import patch, MagicMock
-
-patch("backend.vault.routes.jwt_required", lambda *a, **kw: (lambda f: f)).start()
-patch("backend.vault.routes.get_jwt_identity", return_value=1).start()
-
 import pytest
-from flask import Flask
-from backend.app import create_app
 
 
-@pytest.fixture
-def client():
-    app = create_app()
-    app.config["TESTING"] = True
-    with app.test_client() as client:
-        yield client
+from unittest.mock import patch
 
 
 @patch("backend.vault.services.VaultService.list_entries")

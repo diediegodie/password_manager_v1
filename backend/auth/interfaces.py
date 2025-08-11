@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 
 class IRegistrationValidator(ABC):
@@ -31,4 +32,19 @@ class IPasswordHasher(ABC):
 
     @abstractmethod
     def hash(self, password: str) -> str:
+        pass
+
+
+# --- SOLID: Auth Provider Abstraction ---
+class IAuthProvider(ABC):
+    """Interface for authentication provider (e.g., JWT)."""
+
+    @abstractmethod
+    def require_auth(self, fn):
+        """Decorator to require authentication on a route."""
+        pass
+
+    @abstractmethod
+    def get_identity(self) -> Any:
+        """Get the current user's identity (user_id, etc)."""
         pass

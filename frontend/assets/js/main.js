@@ -108,11 +108,22 @@ document.addEventListener('DOMContentLoaded', function () {
             return localStorage.getItem('access_token');
         }
 
+        // Helper: get/set vault password (in memory only)
+        let vaultPassword = null;
+        function promptVaultPassword() {
+            vaultPassword = prompt('Enter your vault password (never stored):');
+            if (!vaultPassword) {
+                alert('Vault password required.');
+                window.location.href = 'login.html';
+            }
+        }
+
         // Fetch and render vault entries
         async function loadEntries() {
+            if (!vaultPassword) promptVaultPassword();
             vaultEntries.innerHTML = '<div>Loading...</div>';
             try {
-                const resp = await fetch('/api/vault/', {
+                const resp = await fetch('/api/vault/?password=' + encodeURIComponent(vaultPassword), {
                     headers: { 'Authorization': 'Bearer ' + getToken() }
                 });
                 if (!resp.ok) throw new Error('Failed to load entries');
@@ -125,10 +136,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     data.entries.forEach(entry => {
                         const card = document.createElement('div');
                         card.className = 'vault-card';
+                        // Show decrypted fields if present
+                        const decrypted = entry.decrypted || {};
                         card.innerHTML = `
-                            <div class="vault-service">${entry.service}</div>
-                            <div class="vault-username">${entry.username}</div>
-                            <div class="vault-password">${entry.password ? '••••••••' : ''}</div>
+                            <div class="vault-service">${decrypted.service || ''}</div>
+                            <div class="vault-username">${decrypted.username || ''}</div>
+                            <div class="vault-password">${decrypted.password ? '••••••••' : ''}</div>
                             <button class="app-btn app-btn--small edit-entry" data-id="${entry.id}">Edit</button>
                             <button class="app-btn app-btn--small delete-entry" data-id="${entry.id}">Delete</button>
                         `;
@@ -145,10 +158,10 @@ document.addEventListener('DOMContentLoaded', function () {
             entryForm.reset();
             entryForm.dataset.editing = editing ? '1' : '';
             entryForm.dataset.entryId = editing && entry ? entry.id : '';
-            if (editing && entry) {
-                entryForm.service.value = entry.service;
-                entryForm.username.value = entry.username;
-                entryForm.password.value = entry.password;
+            if (editing && entry && entry.decrypted) {
+                entryForm.service.value = entry.decrypted.service || '';
+                entryForm.username.value = entry.decrypted.username || '';
+                entryForm.password.value = entry.decrypted.password || '';
             }
             entryFormModal.style.display = 'block';
         }
@@ -163,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Save entry (add or edit)
         entryForm && entryForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+            if (!vaultPassword) promptVaultPassword();
             const service = entryForm.service.value.trim();
             const username = entryForm.username.value.trim();
             const password = entryForm.password.value;
@@ -181,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + getToken()
                     },
-                    body: JSON.stringify({ service, username, password })
+                    body: JSON.stringify({ entry: { service, username, password }, password: vaultPassword })
                 });
                 if (!resp.ok) throw new Error('Failed to save entry');
                 hideModal();
@@ -195,9 +209,9 @@ document.addEventListener('DOMContentLoaded', function () {
         vaultEntries && vaultEntries.addEventListener('click', async function (e) {
             if (e.target.classList.contains('edit-entry')) {
                 const id = e.target.dataset.id;
-                // Fetch entry details (or reuse from loaded data if available)
+                if (!vaultPassword) promptVaultPassword();
                 try {
-                    const resp = await fetch('/api/vault/' + id, {
+                    const resp = await fetch('/api/vault/' + id + '?password=' + encodeURIComponent(vaultPassword), {
                         headers: { 'Authorization': 'Bearer ' + getToken() }
                     });
                     if (!resp.ok) throw new Error();
@@ -226,6 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Logout
         logoutBtn && logoutBtn.addEventListener('click', function () {
             localStorage.removeItem('access_token');
+            vaultPassword = null;
             window.location.href = 'login.html';
         });
 

@@ -5,9 +5,9 @@ This module contains tests for the user registration endpoint,
 covering normal cases, edge cases, and failure cases.
 """
 
+
 import pytest
 import unittest.mock as mock
-from backend.app import create_app
 from backend.auth.validators import ValidationError
 from backend.auth.interfaces import (
     IRegistrationValidator,
@@ -17,16 +17,7 @@ from backend.auth.interfaces import (
 from backend.auth.exceptions import DuplicateEmailError, DatabaseError, HashingError
 
 
-@pytest.fixture
-def app():
-    app = create_app()
-    app.config["TESTING"] = True
-    return app
 
-
-@pytest.fixture
-def client(app):
-    return app.test_client()
 
 
 def test_register_success(app, client):
@@ -45,26 +36,23 @@ def test_register_success(app, client):
         app.config["REGISTRATION_VALIDATOR"] = mock_validator
         app.config["USER_REPOSITORY"] = mock_repo
         app.config["PASSWORD_HASHER"] = mock_hasher
-
-        # Send request
-        response = client.post(
-            "/api/auth/register",
-            json={"email": "test@example.com", "password": "Password123"},
-        )
-
-        # Assert API response
-        assert response.status_code == 201
-        assert response.get_json()["message"] == "User registered successfully."
-
-        # Assert mocked methods were called with correct values
-        mock_validator.validate.assert_called_once_with(
-            "test@example.com", "Password123"
-        )
-        mock_repo.is_email_taken.assert_called_once_with("test@example.com")
-        mock_hasher.hash.assert_called_once_with("Password123")
-        mock_repo.create_user.assert_called_once_with(
-            "test@example.com", "hashed_password"
-        )
+    # Send request
+    response = client.post(
+        "/api/auth/register",
+        json={"email": "test@example.com", "password": "Password123"},
+    )
+    # Assert API response
+    assert response.status_code == 201
+    assert response.get_json()["message"] == "User registered successfully."
+    # Assert mocked methods were called with correct values
+    mock_validator.validate.assert_called_once_with(
+        "test@example.com", "Password123"
+    )
+    mock_repo.is_email_taken.assert_called_once_with("test@example.com")
+    mock_hasher.hash.assert_called_once_with("Password123")
+    mock_repo.create_user.assert_called_once_with(
+        "test@example.com", "hashed_password"
+    )
 
 
 def test_register_duplicate_email(app, client):

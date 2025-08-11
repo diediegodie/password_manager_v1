@@ -38,16 +38,15 @@ def test_valid_login(app, client):
 
     with app.app_context():
         app.config["USER_REPOSITORY"] = mock_user_repo
-        # Patch verify_password in the route's module context
-        with patch("backend.auth.routes.verify_password", mock_verify_password):
-            resp = client.post(
-                "/api/auth/login",
-                json={"email": "user@example.com", "password": "correctpassword"},
-            )
-            assert resp.status_code == 200
-            data = resp.get_json()
-            assert "access_token" in data
-            assert data["user"]["email"] == "user@example.com"
+        app.config["PASSWORD_HASHER"].verify = mock_verify_password
+    resp = client.post(
+        "/api/auth/login",
+        json={"email": "user@example.com", "password": "correctpassword"},
+    )
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert "access_token" in data
+    assert data["user"]["email"] == "user@example.com"
 
 
 def test_login_nonexistent_email(app, client):
@@ -55,15 +54,15 @@ def test_login_nonexistent_email(app, client):
     mock_user_repo.get_user_by_email.return_value = None
     with app.app_context():
         app.config["USER_REPOSITORY"] = mock_user_repo
-        with patch("backend.auth.routes.verify_password", MagicMock()):
-            resp = client.post(
-                "/api/auth/login",
-                json={"email": "notfound@example.com", "password": "irrelevant"},
-            )
-            assert resp.status_code == 401
-            data = resp.get_json()
-            assert "error" in data
-            assert "Invalid email or password." in data["error"]
+        app.config["PASSWORD_HASHER"].verify = MagicMock()
+    resp = client.post(
+        "/api/auth/login",
+        json={"email": "notfound@example.com", "password": "irrelevant"},
+    )
+    assert resp.status_code == 401
+    data = resp.get_json()
+    assert "error" in data
+    assert "Invalid email or password." in data["error"]
 
 
 def test_login_wrong_password(app, client):
@@ -73,15 +72,15 @@ def test_login_wrong_password(app, client):
     mock_verify_password = MagicMock(return_value=False)
     with app.app_context():
         app.config["USER_REPOSITORY"] = mock_user_repo
-        with patch("backend.auth.routes.verify_password", mock_verify_password):
-            resp = client.post(
-                "/api/auth/login",
-                json={"email": "user@example.com", "password": "wrongpassword"},
-            )
-            assert resp.status_code == 401
-            data = resp.get_json()
-            assert "error" in data
-            assert "Invalid email or password." in data["error"]
+        app.config["PASSWORD_HASHER"].verify = mock_verify_password
+    resp = client.post(
+        "/api/auth/login",
+        json={"email": "user@example.com", "password": "wrongpassword"},
+    )
+    assert resp.status_code == 401
+    data = resp.get_json()
+    assert "error" in data
+    assert "Invalid email or password." in data["error"]
 
 
 def test_login_invalid_email_format(client):

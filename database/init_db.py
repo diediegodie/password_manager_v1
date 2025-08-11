@@ -30,6 +30,14 @@ CREATE TABLE IF NOT EXISTS vault (
 );
 """
 
+CREATE_SALTS_TABLE_SQL = """
+CREATE TABLE IF NOT EXISTS user_salts (
+    user_id INTEGER PRIMARY KEY,
+    salt BLOB NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+"""
+
 
 def get_db_connection():
     """Get a SQLite connection to the database."""
@@ -46,6 +54,7 @@ def initialize_database():
     with get_db_connection() as conn:
         conn.execute(CREATE_USERS_TABLE_SQL)
         conn.execute(CREATE_VAULT_TABLE_SQL)
+        conn.execute(CREATE_SALTS_TABLE_SQL)
         conn.commit()
 
 

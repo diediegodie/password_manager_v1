@@ -2,12 +2,16 @@
 VaultRepository: DB access for vault entries.
 """
 
-from backend.utils.db import get_db
+from backend.vault.interfaces import IVaultRepository
 
 
-class VaultRepository:
-    def __init__(self, db=None):
-        self.db = db or get_db()
+class VaultRepository(IVaultRepository):
+    def __init__(self, db):
+        """
+        Args:
+            db: Database connection (must be provided, no fallback).
+        """
+        self.db = db
 
     def list_entries(self, user_id):
         cur = self.db.execute(

@@ -3,21 +3,97 @@
 
 import os
 from flask import Flask, jsonify
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import (
+    JWTManager,
+    create_access_token,
+    jwt_required,
+    get_jwt_identity,
+)
 from backend.auth.routes import auth_bp as auth_blueprint
-from backend.auth.validators import ValidationError
+from backend.auth.validators import (
+    ValidationError,
+    EmailValidator,
+    PasswordValidator,
+    RegistrationValidator,
+)
 from backend.auth.exceptions import DuplicateEmailError
+from backend.auth.hashing import BcryptPasswordHasher
+from backend.auth.repository import UserRepository
+from backend.utils.db import SQLiteConnection
+from backend.vault.repository import VaultRepository
+from backend.vault.services import VaultService
+from backend.vault.interfaces import IVaultRepository, IVaultService
+
+app = Flask(__name__)
+
+# --- Dependency Wiring ---
+# Database connection (shared for all repositories)
+db_connection = SQLiteConnection()
+
+# Repositories
+user_repo = UserRepository(db_connection)
+vault_repo = VaultRepository(db_connection)
+
+# Services
+vault_service = VaultService(vault_repo)
+
+# Validators
+email_validator = EmailValidator()
+password_validator = PasswordValidator()
+registration_validator = RegistrationValidator(email_validator, password_validator)
+
+# Hasher
+password_hasher = BcryptPasswordHasher()
+
+# Auth Provider abstraction (simple wrapper for now)
+
+
+# Auth Provider abstraction (simple wrapper for now)
+class FlaskJWTAuthProvider:
+    def require_auth(self, fn):
+        return jwt_required()(fn)
+
+    def get_identity(self):
+        return get_jwt_identity()
+
+    def create_access_token(self, identity):
+        return create_access_token(identity=identity)
 
 
 def create_app():
-
     app = Flask(__name__)
-    # ...existing code...
 
-    # Register the auth blueprint
+    # --- Dependency Wiring ---
+    # Database connection (shared for all repositories)
+    db_connection = SQLiteConnection()
+
+    # Repositories
+    user_repo = UserRepository(db_connection)
+    vault_repo = VaultRepository(db_connection)
+
+    # Services
+    vault_service = VaultService(vault_repo)
+
+    # Validators
+    email_validator = EmailValidator()
+    password_validator = PasswordValidator()
+    registration_validator = RegistrationValidator(email_validator, password_validator)
+
+    # Hasher
+    password_hasher = BcryptPasswordHasher()
+
+    # Auth Provider abstraction (simple wrapper for now)
+    auth_provider = FlaskJWTAuthProvider()
+
+    # Inject dependencies into app config
+    app.config["USER_REPOSITORY"] = user_repo
+    app.config["VAULT_SERVICE"] = vault_service
+    app.config["PASSWORD_HASHER"] = password_hasher
+    app.config["REGISTRATION_VALIDATOR"] = registration_validator
+    app.config["AUTH_PROVIDER"] = auth_provider
+
+    # Register blueprints
     app.register_blueprint(auth_blueprint, url_prefix="/api/auth")
-
-    # Register the vault blueprint
     from backend.vault.routes import vault_bp
 
     app.register_blueprint(vault_bp)
