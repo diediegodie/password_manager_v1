@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Manager</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body>
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- SINGLE NAVIGATION HEADER -->
+    <header>
+        <div class="container">
+            <nav class="glass">
+                <div class="logo" onclick="showPage('home')">
+                    <div class="logo-icon">
+                        <img src="../assets/images/logo-password-manager-white.png" alt="Logo Password Manager" width="48" height="48" />
+                    </div>
+                    <span>Password Manager</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" onclick="showPage('about')">My secrets</a>
+                    <a href="#" onclick="showPage('contact')">Contact</a>
+                    <a href="#" class="cta-button glass" style="margin-left: 10px;" onclick="logout()">Logout</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HOME PAGE -->
+    <div id="home" class="page active">
+        <div class="container">
+            <div class="content-wrapper">
+                <section class="hero glass">
+                    <div class="hero-image">
+                        <img src="../assets/images/security_banner.jpg" alt="Modern Technology Interaction" />
+                    </div>
+                    <div class="hero-content">
+                        <h1>Welcome to<br>Password Manager</h1>
+                        <p>Password Manager is a program designed to securely store your passwords, protecting them from
+                            loss and unauthorized access. It uses advanced encryption to ensure that only you can access
+                            your information, allowing you to manage and recover your passwords with convenience and
+                            peace of mind.</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- VAULT PAGE (MY SECRETS) -->
+    <div id="about" class="page">
+        <div class="container">
+            <div class="content-wrapper">
+                <section class="team-section">
+                    <h2>Your Secrets</h2>
+                    <div class="team-grid">
+                        <div class="team-member glass">
+                            <div class="team-avatar">🔑</div>
+                            <div class="vault-description-group">
+                                <h3>New Secret</h3>
+                                <br>
+                                <div class="form-group">
+                                    <input type="text" id="vault-description" name="vault-description"
+                                        placeholder="Enter vault description..." class="glass vault-input" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="vault-secret-password" name="vault-secret-password"
+                                    placeholder="Secret key" class="glass vault-input" />
+                            </div>
+                            <button type="submit" class="cta-button glass" style="margin-top: 10px;">Submit</button>
+                        </div>
+                        <div class="team-member glass">
+                            <div class="team-avatar">🏦</div>
+                            <div class="vault-description-group">
+                                <h3>Banco do Brasil</h3>
+                                <br>
+                                <div class="form-group">
+                                    <input type="text" id="bank-description" name="bank-description"
+                                        value="Senha do banco do brasil" readonly class="glass vault-input" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="bank-password" name="bank-password" value="minhaSenha123"
+                                    readonly class="glass vault-input" />
+                            </div>
+                            <button type="button" class="cta-button glass" style="margin-top: 10px;"
+                                onclick="toggleBankPassword()">Mostrar senha</button>
+                        </div>
+                        <div class="team-member glass">
+                            <div class="team-avatar">🌐</div>
+                            <div class="vault-description-group">
+                                <h3>Facebook</h3>
+                                <br>
+                                <div class="form-group">
+                                    <input type="text" id="facebook-description" name="facebook-description"
+                                        value="Senha do Facebook" readonly class="glass vault-input" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <input type="password" id="facebook-password" name="facebook-password"
+                                    value="minhaSenha123" readonly class="glass vault-input" />
+                            </div>
+                            <button type="button" class="cta-button glass" style="margin-top: 10px;"
+                                onclick="toggleFacebookPassword()">Mostrar senha</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT PAGE -->
+    <div id="contact" class="page">
+        <div class="container">
+            <div class="content-wrapper">
+                <section class="contact-grid">
+                    <div class="contact-form glass">
+                        <h2>Get In Touch</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="name">Full Name</label>
+                                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" name="subject" placeholder="What's this about?">
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" placeholder="Tell us about your project..."
+                                    required></textarea>
+                            </div>
+                            <button type="submit" class="cta-button">Send Message</button>
+                        </form>
+                    </div>
+
+                    <div class="contact-info glass">
+                        <h2>Contact Information</h2>
+
+                        <div class="contact-item">
+                            <div class="contact-item-icon">📧</div>
+                            <div class="contact-item-text">
+                                <h4>Email</h4>
+                                <p>diego.rodriguez.backend@gmail.com</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-item-icon">📞</div>
+                            <div class="contact-item-text">
+                                <h4>Phone</h4>
+                                <p>+55 11 9 7314 8635</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- SINGLE FOOTER -->
+    <div id="footer">
+        <div class="container">
+            <footer class="glass">
+                <div class="footer-content">
+                    <div class="copyright">
+                        &copy; 2025 Password Manager. This program is open source: anyone can use or modify it freely.
+                        Provided by <a rel="nofollow" href="https://templatemo.com" target="_blank">Diego Rodriguez</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="../assets/js/main.js"></script>
+</body>
+
+</html>

@@ -4,35 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | Password Manager</title>
+    <title>Login - Password Manager</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 
 <body>
-    <main class="vault-container">
-        <header class="vault-header">
-            <h1>Password Vault</h1>
-            <button id="logoutBtn" class="app-btn app-btn--secondary">Logout</button>
-        </header>
-        <section id="vaultEntries" class="vault-entries">
-            <!-- Password entries will be rendered here -->
-        </section>
-        <button id="addEntryBtn" class="app-btn app-btn--primary">Add Entry</button>
-        <div id="entryFormModal" class="modal" style="display:none;">
-            <div class="modal-content">
-                <span class="close" id="closeModal">&times;</span>
-                <form id="entryForm">
-                    <label for="service">Service Name</label>
-                    <input type="text" id="service" name="service" required>
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
-                    <label for="password">Password</label>
-                    <input type="text" id="entryPassword" name="password" required>
-                    <button type="submit" class="app-btn app-btn--primary">Save</button>
-                </form>
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+
+
+    <!-- LOGIN PAGE -->
+    <div id="home" class="page active">
+        <div class="container">
+            <div class="content-wrapper">
+                <section class="hero glass">
+                    <div class="hero-content">
+                        <div class="logo-icon">
+                        <img src="../assets/images/logo-password-manager-white.png" alt="Logo Password Manager" width="48" height="48" />
+                        </div>
+                        <br>
+                        <h1>Welcome to<br>Password manager</h1>
+                        <h1>Please, login to enter your vault or create an account by <a href="/register" style="color: inherit; text-decoration: underline; font-size: inherit;">clicking here</a>.</h1>
+                    </div>
+                    <div class="hero-content">
+                        <div
+                            style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh;">
+                            <h1 style="text-align: center;">Login</h1>
+                            <form class="glass"
+                                style="padding: 32px 28px; border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); max-width: 350px; margin: 0 auto; width: 100%;">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" id="username" name="username" placeholder="Enter your username"
+                                        required class="vault-input" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input type="password" id="password" name="password"
+                                        placeholder="Enter your password" required class="vault-input" />
+                                </div>
+                                <button type="submit" class="cta-button glass"
+                                    style="width: 100%; margin-top: 10px;">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- SINGLE FOOTER -->
+    <div id="footer">
+        <div class="container">
+            <footer class="glass">
+                <div class="footer-content">
+                    <div class="copyright">
+                        &copy; 2025 Password Manager. This program is open source: anyone can use or modify it freely.
+                        Provided by <a rel="nofollow" href="https://templatemo.com" target="_blank">Diego Rodriguez</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
     <script src="../assets/js/main.js"></script>
 </body>
 

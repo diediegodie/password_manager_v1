@@ -1,259 +1,226 @@
-// main.js - Handles frontend logic for register.html and other pages
+/* Password Manager - Extracted and Clean JavaScript */
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Registration handler (register.html)
-    const registerForm = document.querySelector('.auth-form');
-    if (registerForm && window.location.pathname.includes('register')) {
-        registerForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const submitBtn = registerForm.querySelector('.auth-submit');
-            submitBtn.disabled = true;
+let currentPage = 'home';
 
-            // Remove previous messages
-            let oldMsg = document.querySelector('.auth-message');
-            if (oldMsg) oldMsg.remove();
+/**
+ * Show a specific page and hide others
+ * @param {string} pageId - The ID of the page to show
+ */
+function showPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Show selected page
+    document.getElementById(pageId).classList.add('active');
+    
+    // Update navigation
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('onclick') === `showPage('${pageId}')`) {
+            link.classList.add('active');
+        }
+    });
+    
+    currentPage = pageId;
+    
+    // Move footer to the active page
+    const footer = document.getElementById('footer');
+    const activePage = document.getElementById(pageId);
+    activePage.appendChild(footer);
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-            try {
-                const response = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, password }),
-                });
-                const data = await response.json();
-                let msg = document.createElement('div');
-                msg.className = 'auth-message';
-                if (response.status === 201) {
-                    msg.textContent = 'Registration successful! You can now log in.';
-                    msg.style.color = 'green';
-                    registerForm.reset();
-                } else {
-                    msg.textContent = data.message || 'Registration failed.';
-                    msg.style.color = 'red';
-                }
-                registerForm.appendChild(msg);
-            } catch (err) {
-                let msg = document.createElement('div');
-                msg.className = 'auth-message';
-                msg.textContent = 'Network error. Please try again.';
-                msg.style.color = 'red';
-                registerForm.appendChild(msg);
-            } finally {
-                submitBtn.disabled = false;
+/**
+ * Logout function
+ */
+function logout() {
+    // TODO: Implement actual logout logic (clear token, call backend, etc.)
+    alert('Logout realizado!');
+    // window.location.href = '/login'; // Redirect to login page
+}
+
+/**
+ * Toggle password visibility for bank password field
+ */
+function toggleBankPassword() {
+    const input = document.getElementById('bank-password');
+    const btn = input.parentElement.nextElementSibling;
+    if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'Ocultar senha';
+    } else {
+        input.type = 'password';
+        btn.textContent = 'Mostrar senha';
+    }
+}
+
+/**
+ * Toggle password visibility for facebook password field
+ */
+function toggleFacebookPassword() {
+    const input = document.getElementById('facebook-password');
+    const btn = input.parentElement.nextElementSibling;
+    if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = 'Ocultar senha';
+    } else {
+        input.type = 'password';
+        btn.textContent = 'Mostrar senha';
+    }
+}
+
+/**
+ * Initialize the application when DOM is loaded
+ */
+function initializeApp() {
+    // Set initial footer position
+    const footer = document.getElementById('footer');
+    const homePage = document.getElementById('home');
+    if (footer && homePage) {
+        homePage.appendChild(footer);
+    }
+    
+    // Setup interactive effects
+    setupParallaxEffect();
+    setupScrollAnimations();
+    setupRippleEffects();
+    setupFormHandling();
+}
+
+/**
+ * Setup parallax effect for background shapes
+ */
+function setupParallaxEffect() {
+    document.addEventListener('mousemove', (e) => {
+        const shapes = document.querySelectorAll('.shape');
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 0.5;
+            const xPos = (x - 0.5) * speed * 20;
+            const yPos = (y - 0.5) * speed * 20;
+            shape.style.transform = `translate(${xPos}px, ${yPos}px)`;
+        });
+    });
+}
+
+/**
+ * Setup scroll-based animations
+ */
+function setupScrollAnimations() {
+    window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        const parallax = document.querySelector('.bg-shapes');
+        if (parallax) {
+            const speed = scrolled * 0.5;
+            parallax.style.transform = `translateY(${speed}px)`;
+        }
+    });
+}
+
+/**
+ * Setup ripple effects for glass elements
+ */
+function setupRippleEffects() {
+    // Add ripple animation keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
             }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Add click ripple effect to glass elements
+    document.querySelectorAll('.glass').forEach(element => {
+        element.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+            
+            ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+                z-index: 1000;
+            `;
+            
+            this.style.position = 'relative';
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+}
+
+/**
+ * Setup form submission handling
+ */
+function setupFormHandling() {
+    // Add fade in animation for success messages
+    const fadeStyle = document.createElement('style');
+    fadeStyle.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    `;
+    document.head.appendChild(fadeStyle);
+    
+    // Form submission handling
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Create success message
+            const successMsg = document.createElement('div');
+            successMsg.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(46, 204, 113, 0.9);
+                color: white;
+                padding: 20px 40px;
+                border-radius: 10px;
+                backdrop-filter: blur(20px);
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+            successMsg.textContent = 'Message sent successfully! We\'ll get back to you soon.';
+            
+            document.body.appendChild(successMsg);
+            
+            // Remove message after 3 seconds
+            setTimeout(() => {
+                successMsg.remove();
+            }, 3000);
+            
+            // Reset form
+            this.reset();
         });
     }
+}
 
-    // Login handler (login.html)
-    const loginForm = document.getElementById('loginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const submitBtn = loginForm.querySelector('.auth-submit');
-            submitBtn.disabled = true;
-
-            // Remove previous messages
-            let oldMsg = document.querySelector('.auth-message');
-            if (oldMsg) oldMsg.remove();
-
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-                const data = await response.json();
-                let msg = document.createElement('div');
-                msg.className = 'auth-message';
-                if (response.ok && data.access_token) {
-                    msg.textContent = 'Login successful! Redirecting...';
-                    msg.style.color = 'green';
-                    // Optionally store token in localStorage/sessionStorage
-                    // localStorage.setItem('access_token', data.access_token);
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1200);
-                } else {
-                    msg.textContent = data.error || data.message || 'Login failed.';
-                    msg.style.color = 'red';
-                }
-                loginForm.appendChild(msg);
-            } catch (err) {
-                let msg = document.createElement('div');
-                msg.className = 'auth-message';
-                msg.textContent = 'Network error. Please try again.';
-                msg.style.color = 'red';
-                loginForm.appendChild(msg);
-            } finally {
-                submitBtn.disabled = false;
-            }
-        });
-    }
-    // Vault dashboard logic (index.html)
-    if (window.location.pathname.includes('index.html')) {
-        const vaultEntries = document.getElementById('vaultEntries');
-        const addEntryBtn = document.getElementById('addEntryBtn');
-        const entryFormModal = document.getElementById('entryFormModal');
-        const closeModal = document.getElementById('closeModal');
-        const entryForm = document.getElementById('entryForm');
-        const logoutBtn = document.getElementById('logoutBtn');
-
-        // Helper: get token
-        function getToken() {
-            return localStorage.getItem('access_token');
-        }
-
-        // Helper: get/set vault password (in memory only)
-        let vaultPassword = null;
-        function promptVaultPassword() {
-            vaultPassword = prompt('Enter your vault password (never stored):');
-            if (!vaultPassword) {
-                alert('Vault password required.');
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Fetch and render vault entries
-        async function loadEntries() {
-            if (!vaultPassword) promptVaultPassword();
-            vaultEntries.innerHTML = '<div>Loading...</div>';
-            try {
-                const resp = await fetch('/api/vault/?password=' + encodeURIComponent(vaultPassword), {
-                    headers: { 'Authorization': 'Bearer ' + getToken() }
-                });
-                if (!resp.ok) throw new Error('Failed to load entries');
-                const data = await resp.json();
-                if (!Array.isArray(data.entries)) throw new Error('Malformed response');
-                if (data.entries.length === 0) {
-                    vaultEntries.innerHTML = '<div class="empty">No entries yet.</div>';
-                } else {
-                    vaultEntries.innerHTML = '';
-                    data.entries.forEach(entry => {
-                        const card = document.createElement('div');
-                        card.className = 'vault-card';
-                        // Show decrypted fields if present
-                        const decrypted = entry.decrypted || {};
-                        card.innerHTML = `
-                            <div class="vault-service">${decrypted.service || ''}</div>
-                            <div class="vault-username">${decrypted.username || ''}</div>
-                            <div class="vault-password">${decrypted.password ? '••••••••' : ''}</div>
-                            <button class="app-btn app-btn--small edit-entry" data-id="${entry.id}">Edit</button>
-                            <button class="app-btn app-btn--small delete-entry" data-id="${entry.id}">Delete</button>
-                        `;
-                        vaultEntries.appendChild(card);
-                    });
-                }
-            } catch (err) {
-                vaultEntries.innerHTML = '<div class="error">Failed to load entries.</div>';
-            }
-        }
-
-        // Show modal
-        function showModal(editing = false, entry = null) {
-            entryForm.reset();
-            entryForm.dataset.editing = editing ? '1' : '';
-            entryForm.dataset.entryId = editing && entry ? entry.id : '';
-            if (editing && entry && entry.decrypted) {
-                entryForm.service.value = entry.decrypted.service || '';
-                entryForm.username.value = entry.decrypted.username || '';
-                entryForm.password.value = entry.decrypted.password || '';
-            }
-            entryFormModal.style.display = 'block';
-        }
-        function hideModal() {
-            entryFormModal.style.display = 'none';
-        }
-
-        // Add entry
-        addEntryBtn && addEntryBtn.addEventListener('click', () => showModal(false));
-        closeModal && closeModal.addEventListener('click', hideModal);
-
-        // Save entry (add or edit)
-        entryForm && entryForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            if (!vaultPassword) promptVaultPassword();
-            const service = entryForm.service.value.trim();
-            const username = entryForm.username.value.trim();
-            const password = entryForm.password.value;
-            const editing = entryForm.dataset.editing === '1';
-            const entryId = entryForm.dataset.entryId;
-            let url = '/api/vault/';
-            let method = 'POST';
-            if (editing && entryId) {
-                url += entryId;
-                method = 'PUT';
-            }
-            try {
-                const resp = await fetch(url, {
-                    method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + getToken()
-                    },
-                    body: JSON.stringify({ entry: { service, username, password }, password: vaultPassword })
-                });
-                if (!resp.ok) throw new Error('Failed to save entry');
-                hideModal();
-                loadEntries();
-            } catch (err) {
-                alert('Failed to save entry.');
-            }
-        });
-
-        // Edit/delete handlers
-        vaultEntries && vaultEntries.addEventListener('click', async function (e) {
-            if (e.target.classList.contains('edit-entry')) {
-                const id = e.target.dataset.id;
-                if (!vaultPassword) promptVaultPassword();
-                try {
-                    const resp = await fetch('/api/vault/' + id + '?password=' + encodeURIComponent(vaultPassword), {
-                        headers: { 'Authorization': 'Bearer ' + getToken() }
-                    });
-                    if (!resp.ok) throw new Error();
-                    const entry = await resp.json();
-                    showModal(true, entry);
-                } catch {
-                    alert('Failed to load entry.');
-                }
-            } else if (e.target.classList.contains('delete-entry')) {
-                const id = e.target.dataset.id;
-                if (confirm('Delete this entry?')) {
-                    try {
-                        const resp = await fetch('/api/vault/' + id, {
-                            method: 'DELETE',
-                            headers: { 'Authorization': 'Bearer ' + getToken() }
-                        });
-                        if (!resp.ok) throw new Error();
-                        loadEntries();
-                    } catch {
-                        alert('Failed to delete entry.');
-                    }
-                }
-            }
-        });
-
-        // Logout
-        logoutBtn && logoutBtn.addEventListener('click', function () {
-            localStorage.removeItem('access_token');
-            vaultPassword = null;
-            window.location.href = 'login.html';
-        });
-
-        // Modal close on outside click
-        window.onclick = function (event) {
-            if (event.target === entryFormModal) hideModal();
-        };
-
-        // On load, check auth and load entries
-        if (!getToken()) {
-            window.location.href = 'login.html';
-        } else {
-            loadEntries();
-        }
-    }
-});
+// Initialize when DOM is loaded
+window.addEventListener('DOMContentLoaded', initializeApp);
